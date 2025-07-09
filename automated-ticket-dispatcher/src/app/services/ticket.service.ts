@@ -179,4 +179,11 @@ export class TicketService {
       { headers: this.getAuthHeaders() }
     );
   }
+
+  // Fetch agent details by ID
+  getAgentById(agentId: string): Observable<any> {
+    return this.http.get<any>(`http://localhost:3000/api/agents/${agentId}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
 }

@@ -321,6 +321,18 @@ import { Ticket, TicketStats } from '../models/ticket.model';
                     <strong>Created:</strong> {{ selectedTicket.created_at | date:'medium' }}
                   </div>
                 </div>
+                <!-- Assigned Agent Block -->
+                <div class="row mt-2" *ngIf="selectedTicket.assigned_to">
+                  <div class="col-12">
+                    <strong>Assigned Agent:</strong>
+                    <span *ngIf="selectedTicket.assigned_to.first_name || selectedTicket.assigned_to.last_name">
+                      {{ selectedTicket.assigned_to.first_name }} {{ selectedTicket.assigned_to.last_name }}
+                    </span>
+                    <span *ngIf="selectedTicket.assigned_to.email">
+                      (<a href="mailto:{{ selectedTicket.assigned_to.email }}">{{ selectedTicket.assigned_to.email }}</a>)
+                    </span>
+                  </div>
+                </div>
                 <hr>
                 <div class="row">
                   <div class="col-12">
@@ -363,6 +375,19 @@ import { Ticket, TicketStats } from '../models/ticket.model';
                   </div>
                   <div class="col-md-6">
                     <strong>Complexity:</strong> {{ selectedTicket.complexity | titlecase }}
+                  </div>
+                </div>
+                <!-- Assigned Agent Info -->
+                <div class="row mt-3" *ngIf="selectedTicket.assigned_to">
+                  <div class="col-12">
+                    <div class="alert alert-info mb-2">
+                      <strong>Assigned Agent:</strong>
+                      <span *ngIf="selectedTicket.assigned_to">
+                        {{ selectedTicket.assigned_to.first_name }} {{ selectedTicket.assigned_to.last_name }}
+                        <span *ngIf="selectedTicket.assigned_to.email">&lt;{{ selectedTicket.assigned_to.email }}&gt;</span>
+                      </span>
+                      <span *ngIf="!selectedTicket.assigned_to">Unassigned</span>
+                    </div>
                   </div>
                 </div>
                 <div class="row" *ngIf="selectedTicket.escalated">
@@ -562,11 +587,23 @@ export class DashboardComponent implements OnInit {
     this.loadAgingData();
   }
 
-  loadTickets() {
+  async loadTickets() {
     this.isLoading = true;
     this.ticketService.getAllTickets().subscribe({
-      next: (response) => {
-        this.tickets = response.tickets;
+      next: async (response) => {
+        // If assigned_to is just an object with _id, fetch agent details
+        const ticketsWithAgents = await Promise.all(response.tickets.map(async (ticket: any) => {
+          if (ticket.assigned_to && ticket.assigned_to._id && (!ticket.assigned_to.first_name || !ticket.assigned_to.email)) {
+            try {
+              const agent = await this.ticketService.getAgentById(ticket.assigned_to._id).toPromise();
+              ticket.assigned_to = agent;
+            } catch (e) {
+              // fallback: keep as is
+            }
+          }
+          return ticket;
+        }));
+        this.tickets = ticketsWithAgents;
         this.isLoading = false;
       },
       error: (error) => {

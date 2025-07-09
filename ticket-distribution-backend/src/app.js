@@ -16,6 +16,7 @@ app.use(express.json()); // Use built-in express.json() instead of body-parser
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/tickets', require('./routes/tickets'));
+app.use('/api/agents', require('./routes/agents'));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
