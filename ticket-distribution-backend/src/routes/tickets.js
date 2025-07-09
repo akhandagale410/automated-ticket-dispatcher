@@ -88,6 +88,48 @@ router.get('/stats/aging', auth, async (req, res) => {
   }
 });
 
+// Get unassigned tickets for agents to pick up
+router.get('/agent/unassigned', auth, async (req, res) => {
+  try {
+    // Only agents and admins can view unassigned tickets
+    if (req.user.role !== 'agent' && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Access denied. Only agents can view unassigned tickets.' });
+    }
+
+    // Get tickets that are not assigned to anyone or have status 'new'
+    const tickets = await Ticket.find({ 
+      $or: [
+        { assigned_to: null },
+        { assigned_to: { $exists: false } },
+        { status: 'new' }
+      ]
+    })
+      .populate('customer', 'organization')
+      .sort({ created_at: -1 });
+
+    res.json({ tickets });
+  } catch (error) {
+    console.error('Get unassigned tickets error:', error);
+    res.status(500).json({ message: 'Server error while fetching unassigned tickets' });
+  }
+});
+
+// Get tickets assigned to the current agent (MUST be before /:id route)
+router.get('/agent/my-tickets', auth, async (req, res) => {
+  try {
+    // Get all tickets assigned to the current user (agent)
+    const tickets = await Ticket.find({ assigned_to: req.user._id })
+      .populate('customer', 'organization')
+      .populate('assigned_to', 'first_name last_name email')
+      .sort({ created_at: -1 });
+
+    res.json({ tickets });
+  } catch (error) {
+    console.error('Get agent tickets error:', error);
+    res.status(500).json({ message: 'Server error while fetching agent tickets' });
+  }
+});
+
 // Get all tickets for the authenticated user
 router.get('/', auth, async (req, res) => {
   try {
@@ -345,6 +387,90 @@ router.post('/:id/escalate', auth, async (req, res) => {
   } catch (error) {
     console.error('Escalate ticket error:', error);
     res.status(500).json({ message: 'Server error while escalating ticket' });
+  }
+});
+
+// Assign ticket to an agent
+router.post('/:id/assign', auth, async (req, res) => {
+  try {
+    const ticket = await Ticket.findById(req.params.id);
+    if (!ticket) {
+      return res.status(404).json({ message: 'Ticket not found' });
+    }
+
+    const { agentId } = req.body;
+    
+    // If no agentId provided, assign to current user (if they are an agent)
+    const assigneeId = agentId || req.user._id;
+
+    // Validate that the assignee is an agent or admin
+    if (!agentId && req.user.role !== 'agent' && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Only agents and admins can assign tickets to themselves' });
+    }
+
+    ticket.assigned_to = assigneeId;
+    ticket.status = 'assigned';
+    ticket.updated_at = new Date();
+
+    // Add to history
+    ticket.history.push({
+      status: 'assigned',
+      changedBy: `${req.user.first_name} ${req.user.last_name}`,
+      changedAt: new Date()
+    });
+
+    await ticket.save();
+
+    // Populate the response
+    const populatedTicket = await Ticket.findById(ticket._id)
+      .populate('customer', 'organization')
+      .populate('assigned_to', 'first_name last_name email');
+
+    res.json({
+      message: 'Ticket assigned successfully',
+      ticket: populatedTicket
+    });
+  } catch (error) {
+    console.error('Assign ticket error:', error);
+    res.status(500).json({ message: 'Server error while assigning ticket' });
+  }
+});
+
+// Add comment to a ticket
+router.post('/:id/comment', auth, async (req, res) => {
+  try {
+    const ticket = await Ticket.findById(req.params.id);
+    if (!ticket) {
+      return res.status(404).json({ message: 'Ticket not found' });
+    }
+
+    const { comment } = req.body;
+    if (!comment || !comment.trim()) {
+      return res.status(400).json({ message: 'Comment is required' });
+    }
+
+    // Add comment to internal notes
+    ticket.internal_notes.push({
+      body: comment.trim(),
+      addedBy: `${req.user.first_name} ${req.user.last_name} (${req.user.role})`,
+      createdAt: new Date()
+    });
+
+    ticket.updated_at = new Date();
+    await ticket.save();
+
+    // Populate the response
+    const populatedTicket = await Ticket.findById(ticket._id)
+      .populate('customer', 'organization')
+      .populate('assigned_to', 'first_name last_name email');
+
+    res.json({
+      message: 'Comment added successfully',
+      ticket: populatedTicket
+    });
+  } catch (error) {
+    console.error('Add comment error:', error);
+    res.status(500).json({ message: 'Server error while adding comment' });
   }
 });
 

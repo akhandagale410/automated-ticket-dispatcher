@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Customer = require('../models/Customer');
 const Agent = require('../models/Agent');
+const { setupDefaultAgents } = require('../setupAgents');
 
 const router = express.Router();
 
@@ -37,22 +38,20 @@ router.post('/register', async (req, res) => {
     if (role === 'customer') {
       const customerProfile = new Customer({
         user: newUser._id,
-        customerNumber: `CUST${Date.now()}${Math.random().toString(36).substr(2, 3).toUpperCase()}`,
-        company: 'Default Company',
-        department: 'General',
-        priority: 'normal',
-        contactPreference: 'email'
+        organization: 'Default Company'
       });
       await customerProfile.save();
       console.log(`✅ Customer profile created for user: ${newUser.email}`);
     } else if (role === 'agent' || role === 'admin') {
       const agentProfile = new Agent({
         user: newUser._id,
-        employeeId: `EMP${Date.now()}${Math.random().toString(36).substr(2, 3).toUpperCase()}`,
-        department: 'Support',
         skills: ['general-support'],
-        availability: 'available',
-        maxConcurrentTickets: 10
+        domain_expertise: ['technical-support'],
+        experience: 1,
+        certifications: [],
+        max_tickets: 10,
+        workload: 0,
+        availability: 'offline'
       });
       await agentProfile.save();
       console.log(`✅ Agent profile created for user: ${newUser.email}`);
@@ -123,11 +122,7 @@ router.post('/login', async (req, res) => {
         console.log('🔧 Creating missing Customer profile...');
         const customerProfile = new Customer({
           user: user._id,
-          customerNumber: `CUST${Date.now()}${Math.random().toString(36).substr(2, 3).toUpperCase()}`,
-          company: 'Default Company',
-          department: 'General',
-          priority: 'normal',
-          contactPreference: 'email'
+          organization: 'Default Company'
         });
         await customerProfile.save();
         console.log(`✅ Customer profile created for user: ${user.email}`);
@@ -138,11 +133,13 @@ router.post('/login', async (req, res) => {
         console.log('🔧 Creating missing Agent profile...');
         const agentProfile = new Agent({
           user: user._id,
-          employeeId: `EMP${Date.now()}${Math.random().toString(36).substr(2, 3).toUpperCase()}`,
-          department: 'Support',
           skills: ['general-support'],
-          availability: 'available',
-          maxConcurrentTickets: 10
+          domain_expertise: ['technical-support'],
+          experience: 1,
+          certifications: [],
+          max_tickets: 10,
+          workload: 0,
+          availability: 'offline'
         });
         await agentProfile.save();
         console.log(`✅ Agent profile created for user: ${user.email}`);
@@ -194,6 +191,34 @@ router.get('/profile', async (req, res) => {
   } catch (error) {
     console.error('Profile error:', error);
     res.status(401).json({ message: 'Invalid token' });
+  }
+});
+
+// Setup route to create default agents (for development/testing)
+router.post('/setup-agents', async (req, res) => {
+  try {
+    console.log('🔧 Setting up default agents...');
+    await setupDefaultAgents();
+    
+    // Return list of created agents
+    const agents = await User.find({ role: { $in: ['agent', 'admin'] } }).select('-password');
+    
+    res.json({
+      message: 'Default agents setup completed',
+      agents: agents.map(agent => ({
+        email: agent.email,
+        name: `${agent.first_name} ${agent.last_name}`,
+        role: agent.role
+      })),
+      credentials: [
+        { email: 'agent@company.com', password: 'agent123', role: 'agent' },
+        { email: 'sarah.support@company.com', password: 'agent123', role: 'agent' },
+        { email: 'admin@company.com', password: 'admin123', role: 'admin' }
+      ]
+    });
+  } catch (error) {
+    console.error('Setup agents error:', error);
+    res.status(500).json({ message: 'Error setting up agents', error: error.message });
   }
 });
 

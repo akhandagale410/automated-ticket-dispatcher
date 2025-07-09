@@ -28,8 +28,12 @@ export class AuthService {
         this.isLoggedInSubject.next(true);
         this.currentUserSubject.next(res.user);
         
-        // All users redirect to the dashboard (customer dashboard)
-        this.router.navigate(['/dashboard']);
+        // Role-based routing
+        if (res.user.role === 'agent' || res.user.role === 'admin') {
+          this.router.navigate(['/agent-dashboard']);
+        } else {
+          this.router.navigate(['/dashboard']);
+        }
         this.redirectUrl = '/dashboard'; // Reset redirect URL
       })
     );

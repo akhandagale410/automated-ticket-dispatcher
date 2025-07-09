@@ -1,9 +1,12 @@
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./db/connect');
+const { setupDefaultAgents } = require('./setupAgents');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+
 
 // Connect to database
 connectDB();
@@ -31,8 +34,25 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
+  console.log('🚀 Automated Ticket Distribution System started');
+  
+  // Auto-setup default agents on server start
+  try {
+    console.log('🔧 Setting up default agents...');
+    //await setupDefaultAgents();
+    console.log('✅ Default agents setup completed');
+    
+    console.log('\n🔑 Login Credentials:');
+    console.log('AGENT: agent@company.com / agent123');
+    console.log('AGENT: sarah.support@company.com / agent123');
+    console.log('ADMIN: admin@company.com / admin123');
+    console.log('\n🌐 Access agent dashboard at: http://localhost:4200/agent-dashboard');
+  } catch (error) {
+    console.log('⚠️ Agent setup encountered an issue:', error.message);
+    console.log('💡 You can manually create agents by calling POST /api/auth/setup-agents');
+  }
 });
 
 module.exports = app;

@@ -33,6 +33,28 @@ export class TicketService {
     });
   }
 
+  // Get tickets assigned to the current agent
+  getMyAgentTickets(): Observable<{ tickets: Ticket[] }> {
+    return this.http.get<{ tickets: Ticket[] }>(`${this.apiUrl}/agent/my-tickets`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // Get unassigned tickets for agents to pick up
+  getUnassignedTickets(): Observable<{ tickets: Ticket[] }> {
+    return this.http.get<{ tickets: Ticket[] }>(`${this.apiUrl}/agent/unassigned`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // Assign ticket to agent (or self if no agentId provided)
+  assignTicket(id: string, agentId?: string): Observable<{ message: string; ticket: Ticket }> {
+    const body = agentId ? { agentId } : {};
+    return this.http.post<{ message: string; ticket: Ticket }>(`${this.apiUrl}/${id}/assign`, body, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   // Get a specific ticket by ID
   getTicket(id: string): Observable<{ ticket: Ticket }> {
     return this.http.get<{ ticket: Ticket }>(`${this.apiUrl}/${id}`, {
@@ -64,6 +86,13 @@ export class TicketService {
   // Escalate a ticket
   escalateTicket(id: string, escalationData: EscalateTicketRequest): Observable<{ message: string; ticket: Ticket }> {
     return this.http.post<{ message: string; ticket: Ticket }>(`${this.apiUrl}/${id}/escalate`, escalationData, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // Add comment to a ticket
+  addComment(id: string, comment: string): Observable<{ message: string; ticket: Ticket }> {
+    return this.http.post<{ message: string; ticket: Ticket }>(`${this.apiUrl}/${id}/comment`, { comment }, {
       headers: this.getAuthHeaders()
     });
   }

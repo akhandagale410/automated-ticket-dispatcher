@@ -3,6 +3,8 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { AgentDashboardComponent } from './agent-dashboard/agent-dashboard.component';
+import { authGuard } from './auth/auth.guard';
 
 export const routes: Routes = [
   { 
@@ -19,7 +21,13 @@ export const routes: Routes = [
   },
   { 
     path: 'dashboard', 
-    component: DashboardComponent
+    component: DashboardComponent,
+    canActivate: [authGuard]
+  },
+  { 
+    path: 'agent-dashboard', 
+    component: AgentDashboardComponent,
+    canActivate: [authGuard]
   },
   { 
     path: '**', 

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
 import { TicketService } from '../services/ticket.service';
@@ -529,10 +529,18 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private ticketService: TicketService
+    private ticketService: TicketService,
+    private router: Router
   ) {}
 
   ngOnInit() {
+    // Check if user should be redirected to agent dashboard
+    const user = this.authService.getCurrentUser();
+    if (user && (user.role === 'agent' || user.role === 'admin')) {
+      this.router.navigate(['/agent-dashboard']);
+      return;
+    }
+    
     this.loadDashboardData();
   }
 
