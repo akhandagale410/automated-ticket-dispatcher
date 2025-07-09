@@ -1,0 +1,293 @@
+[
+  {
+    "subject": "Printer not working in office",
+    "description": "The main office printer is showing an error code and not printing any documents.",
+    "category": "Hardware",
+    "domain": "IT",
+    "product": "HP LaserJet Pro",
+    "operation_type": "Repair",
+    "priority": "high",
+    "complexity": "moderate",
+    "severity": "major",
+    "type": "incident",
+    "region": "North",
+    "country": "USA",
+    "account": "Acme Corp",
+    "skill_required": ["printer", "hardware", "troubleshooting"],
+    "tags": ["urgent", "office"],
+    "security_restriction": false,
+    "customer": "<customer_id>",
+    "assigned_to": "<agent_id_agent@company.com>",
+    "status": "resolved",
+    "history": [
+      {
+        "status": "resolved",
+        "changedBy": "Agent User",
+        "changedAt": "2025-07-01T10:00:00Z",
+        "notes": "Issue fixed by replacing toner."
+      }
+    ]
+  },
+  {
+    "subject": "Cannot access company VPN",
+    "description": "VPN connection fails with authentication error.",
+    "category": "Network",
+    "domain": "IT",
+    "product": "Cisco AnyConnect",
+    "operation_type": "Support",
+    "priority": "medium",
+    "complexity": "low",
+    "severity": "minor",
+    "type": "incident",
+    "region": "West",
+    "country": "USA",
+    "account": "Acme Corp",
+    "skill_required": ["vpn", "network", "authentication"],
+    "tags": ["vpn", "remote"],
+    "security_restriction": false,
+    "customer": "<customer_id>",
+    "assigned_to": "<agent_id_sarah.support@company.com>",
+    "status": "resolved",
+    "history": [
+      {
+        "status": "resolved",
+        "changedBy": "Sarah Support",
+        "changedAt": "2025-07-02T14:30:00Z",
+        "notes": "Reset VPN credentials and connection successful."
+      }
+    ]
+  },
+  {
+    "subject": "Email not syncing on mobile",
+    "description": "User reports that emails are not syncing on their mobile device.",
+    "category": "Software",
+    "domain": "IT",
+    "product": "Outlook Mobile",
+    "operation_type": "Support",
+    "priority": "medium",
+    "complexity": "low",
+    "severity": "minor",
+    "type": "incident",
+    "region": "East",
+    "country": "USA",
+    "account": "Acme Corp",
+    "skill_required": ["email", "mobile", "outlook"],
+    "tags": ["email", "mobile"],
+    "security_restriction": false,
+    "customer": "<customer_id>",
+    "assigned_to": "<agent_id_agent@company.com>",
+    "status": "resolved",
+    "history": [
+      {
+        "status": "resolved",
+        "changedBy": "Agent User",
+        "changedAt": "2025-07-03T09:15:00Z",
+        "notes": "Reconfigured account and sync restored."
+      }
+    ]
+  },
+  {
+    "subject": "Laptop battery draining quickly",
+    "description": "Customer reports battery lasts only 1 hour after full charge.",
+    "category": "Hardware",
+    "domain": "IT",
+    "product": "Dell Latitude",
+    "operation_type": "Repair",
+    "priority": "medium",
+    "complexity": "moderate",
+    "severity": "major",
+    "type": "incident",
+    "region": "South",
+    "country": "USA",
+    "account": "Acme Corp",
+    "skill_required": ["laptop", "battery", "hardware"],
+    "tags": ["battery", "laptop"],
+    "security_restriction": false,
+    "customer": "<customer_id>",
+    "assigned_to": "<agent_id_sarah.support@company.com>",
+    "status": "resolved",
+    "history": [
+      {
+        "status": "resolved",
+        "changedBy": "Sarah Support",
+        "changedAt": "2025-07-04T11:00:00Z",
+        "notes": "Battery replaced under warranty."
+      }
+    ]
+  },
+  {
+    "subject": "Software installation request",
+    "description": "Request to install Adobe Photoshop on marketing team computers.",
+    "category": "Software",
+    "domain": "IT",
+    "product": "Adobe Photoshop",
+    "operation_type": "Install",
+    "priority": "low",
+    "complexity": "low",
+    "severity": "minor",
+    "type": "request",
+    "region": "North",
+    "country": "USA",
+    "account": "Acme Corp",
+    "skill_required": ["software", "installation", "adobe"],
+    "tags": ["software", "install"],
+    "security_restriction": false,
+    "customer": "<customer_id>",
+    "assigned_to": "<agent_id_agent@company.com>",
+    "status": "resolved",
+    "history": [
+      {
+        "status": "resolved",
+        "changedBy": "Agent User",
+        "changedAt": "2025-07-05T13:45:00Z",
+        "notes": "Photoshop installed and licenses activated."
+      }
+    ]
+  },
+  {
+    "subject": "Password reset required",
+    "description": "User forgot password and cannot access account.",
+    "category": "Account",
+    "domain": "IT",
+    "product": "Active Directory",
+    "operation_type": "Support",
+    "priority": "high",
+    "complexity": "low",
+    "severity": "minor",
+    "type": "incident",
+    "region": "West",
+    "country": "USA",
+    "account": "Acme Corp",
+    "skill_required": ["password", "account", "active directory"],
+    "tags": ["password", "reset"],
+    "security_restriction": false,
+    "customer": "<customer_id>",
+    "assigned_to": "<agent_id_sarah.support@company.com>",
+    "status": "resolved",
+    "history": [
+      {
+        "status": "resolved",
+        "changedBy": "Sarah Support",
+        "changedAt": "2025-07-06T08:30:00Z",
+        "notes": "Password reset and user notified."
+      }
+    ]
+  },
+  {
+    "subject": "Monitor flickering intermittently",
+    "description": "Monitor display flickers every few minutes.",
+    "category": "Hardware",
+    "domain": "IT",
+    "product": "Samsung Monitor",
+    "operation_type": "Repair",
+    "priority": "medium",
+    "complexity": "moderate",
+    "severity": "minor",
+    "type": "incident",
+    "region": "East",
+    "country": "USA",
+    "account": "Acme Corp",
+    "skill_required": ["monitor", "hardware", "display"],
+    "tags": ["monitor", "display"],
+    "security_restriction": false,
+    "customer": "<customer_id>",
+    "assigned_to": "<agent_id_agent@company.com>",
+    "status": "resolved",
+    "history": [
+      {
+        "status": "resolved",
+        "changedBy": "Agent User",
+        "changedAt": "2025-07-07T15:20:00Z",
+        "notes": "Monitor cable replaced."
+      }
+    ]
+  },
+  {
+    "subject": "Unable to print color documents",
+    "description": "Printer only prints in black and white.",
+    "category": "Hardware",
+    "domain": "IT",
+    "product": "Canon Color Printer",
+    "operation_type": "Support",
+    "priority": "low",
+    "complexity": "low",
+    "severity": "minor",
+    "type": "incident",
+    "region": "South",
+    "country": "USA",
+    "account": "Acme Corp",
+    "skill_required": ["printer", "color", "hardware"],
+    "tags": ["printer", "color"],
+    "security_restriction": false,
+    "customer": "<customer_id>",
+    "assigned_to": "<agent_id_sarah.support@company.com>",
+    "status": "resolved",
+    "history": [
+      {
+        "status": "resolved",
+        "changedBy": "Sarah Support",
+        "changedAt": "2025-07-08T10:10:00Z",
+        "notes": "Color cartridge replaced."
+      }
+    ]
+  },
+  {
+    "subject": "Wi-Fi connectivity issues",
+    "description": "Wi-Fi drops frequently in the conference room.",
+    "category": "Network",
+    "domain": "IT",
+    "product": "Cisco Wireless",
+    "operation_type": "Support",
+    "priority": "medium",
+    "complexity": "moderate",
+    "severity": "major",
+    "type": "incident",
+    "region": "North",
+    "country": "USA",
+    "account": "Acme Corp",
+    "skill_required": ["wifi", "network", "cisco"],
+    "tags": ["wifi", "network"],
+    "security_restriction": false,
+    "customer": "<customer_id>",
+    "assigned_to": "<agent_id_agent@company.com>",
+    "status": "resolved",
+    "history": [
+      {
+        "status": "resolved",
+        "changedBy": "Agent User",
+        "changedAt": "2025-07-09T16:00:00Z",
+        "notes": "Access point rebooted and firmware updated."
+      }
+    ]
+  },
+  {
+    "subject": "Request for new mouse",
+    "description": "User requests a new wireless mouse for their workstation.",
+    "category": "Hardware",
+    "domain": "IT",
+    "product": "Logitech Mouse",
+    "operation_type": "Request",
+    "priority": "low",
+    "complexity": "low",
+    "severity": "minor",
+    "type": "request",
+    "region": "West",
+    "country": "USA",
+    "account": "Acme Corp",
+    "skill_required": ["hardware", "mouse", "logitech"],
+    "tags": ["mouse", "hardware"],
+    "security_restriction": false,
+    "customer": "<customer_id>",
+    "assigned_to": "<agent_id_sarah.support@company.com>",
+    "status": "resolved",
+    "history": [
+      {
+        "status": "resolved",
+        "changedBy": "Sarah Support",
+        "changedAt": "2025-07-10T12:00:00Z",
+        "notes": "New mouse delivered to user."
+      }
+    ]
+  }
+  // ... 40 more similar objects ...
+]

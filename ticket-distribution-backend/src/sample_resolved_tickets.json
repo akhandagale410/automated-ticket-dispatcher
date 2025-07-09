@@ -1,0 +1,60 @@
+[
+  {
+    "subject": "Printer not working in office",
+    "description": "The main office printer is showing an error code and not printing any documents.",
+    "category": "Hardware",
+    "domain": "IT",
+    "product": "HP LaserJet Pro",
+    "operation_type": "Repair",
+    "priority": "high",
+    "complexity": "moderate",
+    "severity": "major",
+    "type": "incident",
+    "region": "North",
+    "country": "USA",
+    "account": "Acme Corp",
+    "skill_required": ["printer", "hardware", "troubleshooting"],
+    "tags": ["urgent", "office"],
+    "security_restriction": false,
+    "customer": "<customer_id>",
+    "assigned_to": "<agent_id_agent@company.com>",
+    "status": "resolved",
+    "history": [
+      {
+        "status": "resolved",
+        "changedBy": "Agent User",
+        "changedAt": "2025-07-01T10:00:00Z",
+        "notes": "Issue fixed by replacing toner."
+      }
+    ]
+  },
+  {
+    "subject": "Cannot access company VPN",
+    "description": "VPN connection fails with authentication error.",
+    "category": "Network",
+    "domain": "IT",
+    "product": "Cisco AnyConnect",
+    "operation_type": "Support",
+    "priority": "medium",
+    "complexity": "low",
+    "severity": "minor",
+    "type": "incident",
+    "region": "West",
+    "country": "USA",
+    "account": "Acme Corp",
+    "skill_required": ["vpn", "network", "authentication"],
+    "tags": ["vpn", "remote"],
+    "security_restriction": false,
+    "customer": "<customer_id>",
+    "assigned_to": "<agent_id_sarah.support@company.com>",
+    "status": "resolved",
+    "history": [
+      {
+        "status": "resolved",
+        "changedBy": "Sarah Support",
+        "changedAt": "2025-07-02T14:30:00Z",
+        "notes": "Reset VPN credentials and connection successful."
+      }
+    ]
+  }
+]

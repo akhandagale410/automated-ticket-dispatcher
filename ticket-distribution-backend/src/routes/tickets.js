@@ -601,7 +601,9 @@ router.get('/:id', auth, async (req, res) => {
   }
 });
 
-// Create a new ticket
+// Create a new ticket with ML/NLP auto-assignment via Python
+const { spawn } = require('child_process');
+
 router.post('/', auth, async (req, res) => {
   try {
     // Try to find customer profile, but don't require it
@@ -631,41 +633,140 @@ router.post('/', auth, async (req, res) => {
       return res.status(400).json({ message: 'Subject and description are required' });
     }
 
-    const newTicket = new Ticket({
+    // Fetch all agents from MongoDB
+    const agents = await Agent.find().populate('user', 'first_name last_name email');
+
+    // Prepare agent data for Python
+    const agentData = await Promise.all(agents.map(async (agent) => {
+      const activeTickets = await Ticket.countDocuments({
+        assigned_to: agent._id,
+        status: { $nin: ['closed', 'resolved'] }
+      });
+      return {
+        id: agent._id.toString(),
+        skills: agent.skills || [],
+        experience: agent.experience || 0,
+        max_tickets: agent.max_tickets || 10,
+        active_tickets: activeTickets,
+        first_name: agent.user.first_name,
+        last_name: agent.user.last_name,
+        email: agent.user.email
+      };
+    }));
+
+    // Prepare ticket data for Python
+    const ticketData = {
       subject,
       description,
-      category,
-      domain,
-      product,
-      operation_type,
+      skill_required: skill_required || [],
       priority: priority || 'medium',
       complexity: complexity || 'moderate',
       severity: severity || 'minor',
       type: type || 'incident',
-      region,
-      country,
-      account,
-      skill_required: skill_required || [],
-      tags: tags || [],
-      security_restriction: security_restriction || false,
-      customer: customer ? customer._id : null, // Optional customer reference
-      history: [{
-        status: 'new',
-        changedBy: `${req.user.first_name} ${req.user.last_name}`,
-        changedAt: new Date()
-      }]
+      tags: tags || []
+    };
+
+    // Call the Python script for ML/NLP assignment
+    const py = spawn(
+  'C:/hackton/automated-ticket-dispatcher/.venv/Scripts/python.exe',
+  [require('path').join(__dirname, '../auto_assign.py')]
+);
+    let result = '';
+    let errorResult = '';
+
+    py.stdin.write(JSON.stringify({ agents: agentData, ticket: ticketData }));
+    py.stdin.end();
+
+    py.stdout.on('data', (data) => {
+      result += data.toString();
+    });
+    py.stderr.on('data', (data) => {
+      errorResult += data.toString();
     });
 
-    await newTicket.save();
+    py.on('close', async (code) => {
+      if (code !== 0 || errorResult) {
+        console.error('Python ML assignment error:', errorResult);
+        // Fallback: create ticket without assignment
+        const newTicket = new Ticket({
+          subject,
+          description,
+          category,
+          domain,
+          product,
+          operation_type,
+          priority: priority || 'medium',
+          complexity: complexity || 'moderate',
+          severity: severity || 'minor',
+          type: type || 'incident',
+          region,
+          country,
+          account,
+          skill_required: skill_required || [],
+          tags: tags || [],
+          security_restriction: security_restriction || false,
+          customer: customer ? customer._id : null,
+          history: [{
+            status: 'new',
+            changedBy: `${req.user.first_name} ${req.user.last_name}`,
+            changedAt: new Date(),
+            notes: 'Auto-assignment failed, created without agent.'
+          }]
+        });
+        await newTicket.save();
+        const populatedTicket = await Ticket.findById(newTicket._id)
+          .populate('customer', 'organization')
+          .populate('assigned_to', 'first_name last_name email');
+        return res.status(201).json({
+          message: 'Ticket created (auto-assignment failed)',
+          ticket: populatedTicket
+        });
+      }
 
-    // Populate the response
-    const populatedTicket = await Ticket.findById(newTicket._id)
-      .populate('customer', 'organization')
-      .populate('assigned_to', 'first_name last_name email');
+      let bestAgentId = null;
+      try {
+        const pyResult = JSON.parse(result);
+        bestAgentId = pyResult.best_agent_id;
+      } catch (e) {
+        console.error('Error parsing Python result:', e, result);
+      }
 
-    res.status(201).json({
-      message: 'Ticket created successfully',
-      ticket: populatedTicket
+      const newTicket = new Ticket({
+        subject,
+        description,
+        category,
+        domain,
+        product,
+        operation_type,
+        priority: priority || 'medium',
+        complexity: complexity || 'moderate',
+        severity: severity || 'minor',
+        type: type || 'incident',
+        region,
+        country,
+        account,
+        skill_required: skill_required || [],
+        tags: tags || [],
+        security_restriction: security_restriction || false,
+        customer: customer ? customer._id : null,
+        assigned_to: bestAgentId || null,
+        history: [{
+          status: bestAgentId ? 'assigned' : 'new',
+          changedBy: `${req.user.first_name} ${req.user.last_name}`,
+          changedAt: new Date(),
+          notes: bestAgentId ? `Auto-assigned to agent ${bestAgentId}` : 'No suitable agent found for auto-assignment.'
+        }]
+      });
+      await newTicket.save();
+      const populatedTicket = await Ticket.findById(newTicket._id)
+        .populate('customer', 'organization')
+        .populate('assigned_to', 'first_name last_name email');
+      res.status(201).json({
+        message: bestAgentId
+          ? 'Ticket created and auto-assigned to agent.'
+          : 'Ticket created (no suitable agent found for auto-assignment)',
+        ticket: populatedTicket
+      });
     });
   } catch (error) {
     console.error('Create ticket error:', error);

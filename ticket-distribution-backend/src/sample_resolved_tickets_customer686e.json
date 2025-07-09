@@ -1,0 +1,292 @@
+[
+  {
+    "subject": "Outlook not opening on desktop",
+    "description": "User reports Outlook crashes on startup after Windows update.",
+    "category": "Software",
+    "domain": "IT",
+    "product": "Microsoft Outlook",
+    "operation_type": "Support",
+    "priority": "high",
+    "complexity": "moderate",
+    "severity": "major",
+    "type": "incident",
+    "region": "North",
+    "country": "USA",
+    "account": "Acme Corp",
+    "skill_required": ["outlook", "windows", "support"],
+    "tags": ["email", "crash"],
+    "security_restriction": false,
+    "customer": "customer686e136e3098c84cfa9c2be3",
+    "assigned_to": "customer686e136e3098c84cfa9c2be3",
+    "status": "resolved",
+    "history": [
+      {
+        "status": "resolved",
+        "changedBy": "Support Agent",
+        "changedAt": "2025-07-01T09:00:00Z",
+        "notes": "Repaired Outlook profile and issue resolved."
+      }
+    ]
+  },
+  {
+    "subject": "VPN disconnects every hour",
+    "description": "VPN session drops after 60 minutes of use.",
+    "category": "Network",
+    "domain": "IT",
+    "product": "Cisco AnyConnect",
+    "operation_type": "Support",
+    "priority": "medium",
+    "complexity": "low",
+    "severity": "minor",
+    "type": "incident",
+    "region": "West",
+    "country": "USA",
+    "account": "Acme Corp",
+    "skill_required": ["vpn", "network", "cisco"],
+    "tags": ["vpn", "disconnect"],
+    "security_restriction": false,
+    "customer": "customer686e136e3098c84cfa9c2be3",
+    "assigned_to": "customer686e136e3098c84cfa9c2be3",
+    "status": "resolved",
+    "history": [
+      {
+        "status": "resolved",
+        "changedBy": "Support Agent",
+        "changedAt": "2025-07-02T10:30:00Z",
+        "notes": "VPN timeout increased, user confirmed stable connection."
+      }
+    ]
+  },
+  {
+    "subject": "Request for new keyboard",
+    "description": "User requests a replacement for a broken keyboard.",
+    "category": "Hardware",
+    "domain": "IT",
+    "product": "Logitech Keyboard",
+    "operation_type": "Request",
+    "priority": "low",
+    "complexity": "low",
+    "severity": "minor",
+    "type": "request",
+    "region": "East",
+    "country": "USA",
+    "account": "Acme Corp",
+    "skill_required": ["hardware", "keyboard", "logitech"],
+    "tags": ["keyboard", "hardware"],
+    "security_restriction": false,
+    "customer": "customer686e136e3098c84cfa9c2be3",
+    "assigned_to": "customer686e136e3098c84cfa9c2be3",
+    "status": "resolved",
+    "history": [
+      {
+        "status": "resolved",
+        "changedBy": "Support Agent",
+        "changedAt": "2025-07-03T11:15:00Z",
+        "notes": "New keyboard delivered to user."
+      }
+    ]
+  },
+  {
+    "subject": "Wi-Fi not available in meeting room",
+    "description": "No Wi-Fi signal detected in conference room B.",
+    "category": "Network",
+    "domain": "IT",
+    "product": "Cisco Wireless",
+    "operation_type": "Support",
+    "priority": "medium",
+    "complexity": "moderate",
+    "severity": "major",
+    "type": "incident",
+    "region": "South",
+    "country": "USA",
+    "account": "Acme Corp",
+    "skill_required": ["wifi", "network", "cisco"],
+    "tags": ["wifi", "meeting room"],
+    "security_restriction": false,
+    "customer": "customer686e136e3098c84cfa9c2be3",
+    "assigned_to": "customer686e136e3098c84cfa9c2be3",
+    "status": "resolved",
+    "history": [
+      {
+        "status": "resolved",
+        "changedBy": "Support Agent",
+        "changedAt": "2025-07-04T14:00:00Z",
+        "notes": "Access point replaced, Wi-Fi restored."
+      }
+    ]
+  },
+  {
+    "subject": "Monitor display is blurry",
+    "description": "User reports blurry text and images on monitor.",
+    "category": "Hardware",
+    "domain": "IT",
+    "product": "Dell Monitor",
+    "operation_type": "Support",
+    "priority": "low",
+    "complexity": "low",
+    "severity": "minor",
+    "type": "incident",
+    "region": "North",
+    "country": "USA",
+    "account": "Acme Corp",
+    "skill_required": ["monitor", "display", "hardware"],
+    "tags": ["monitor", "blurry"],
+    "security_restriction": false,
+    "customer": "customer686e136e3098c84cfa9c2be3",
+    "assigned_to": "customer686e136e3098c84cfa9c2be3",
+    "status": "resolved",
+    "history": [
+      {
+        "status": "resolved",
+        "changedBy": "Support Agent",
+        "changedAt": "2025-07-05T13:00:00Z",
+        "notes": "Adjusted resolution and replaced cable."
+      }
+    ]
+  },
+  {
+    "subject": "Password reset for user account",
+    "description": "User forgot password and needs reset.",
+    "category": "Account",
+    "domain": "IT",
+    "product": "Active Directory",
+    "operation_type": "Support",
+    "priority": "high",
+    "complexity": "low",
+    "severity": "minor",
+    "type": "incident",
+    "region": "West",
+    "country": "USA",
+    "account": "Acme Corp",
+    "skill_required": ["password", "account", "active directory"],
+    "tags": ["password", "reset"],
+    "security_restriction": false,
+    "customer": "customer686e136e3098c84cfa9c2be3",
+    "assigned_to": "customer686e136e3098c84cfa9c2be3",
+    "status": "resolved",
+    "history": [
+      {
+        "status": "resolved",
+        "changedBy": "Support Agent",
+        "changedAt": "2025-07-06T08:30:00Z",
+        "notes": "Password reset and user notified."
+      }
+    ]
+  },
+  {
+    "subject": "Request for Adobe Acrobat installation",
+    "description": "User requests Adobe Acrobat for PDF editing.",
+    "category": "Software",
+    "domain": "IT",
+    "product": "Adobe Acrobat",
+    "operation_type": "Install",
+    "priority": "low",
+    "complexity": "low",
+    "severity": "minor",
+    "type": "request",
+    "region": "East",
+    "country": "USA",
+    "account": "Acme Corp",
+    "skill_required": ["adobe", "software", "installation"],
+    "tags": ["adobe", "pdf"],
+    "security_restriction": false,
+    "customer": "customer686e136e3098c84cfa9c2be3",
+    "assigned_to": "customer686e136e3098c84cfa9c2be3",
+    "status": "resolved",
+    "history": [
+      {
+        "status": "resolved",
+        "changedBy": "Support Agent",
+        "changedAt": "2025-07-07T10:45:00Z",
+        "notes": "Adobe Acrobat installed and activated."
+      }
+    ]
+  },
+  {
+    "subject": "Laptop battery not charging",
+    "description": "Laptop does not charge when plugged in.",
+    "category": "Hardware",
+    "domain": "IT",
+    "product": "HP EliteBook",
+    "operation_type": "Repair",
+    "priority": "medium",
+    "complexity": "moderate",
+    "severity": "major",
+    "type": "incident",
+    "region": "South",
+    "country": "USA",
+    "account": "Acme Corp",
+    "skill_required": ["laptop", "battery", "hardware"],
+    "tags": ["battery", "charging"],
+    "security_restriction": false,
+    "customer": "customer686e136e3098c84cfa9c2be3",
+    "assigned_to": "customer686e136e3098c84cfa9c2be3",
+    "status": "resolved",
+    "history": [
+      {
+        "status": "resolved",
+        "changedBy": "Support Agent",
+        "changedAt": "2025-07-08T11:30:00Z",
+        "notes": "Charger replaced and battery tested."
+      }
+    ]
+  },
+  {
+    "subject": "Unable to print in color",
+    "description": "Printer only prints in black and white.",
+    "category": "Hardware",
+    "domain": "IT",
+    "product": "Canon Printer",
+    "operation_type": "Support",
+    "priority": "low",
+    "complexity": "low",
+    "severity": "minor",
+    "type": "incident",
+    "region": "North",
+    "country": "USA",
+    "account": "Acme Corp",
+    "skill_required": ["printer", "color", "hardware"],
+    "tags": ["printer", "color"],
+    "security_restriction": false,
+    "customer": "customer686e136e3098c84cfa9c2be3",
+    "assigned_to": "customer686e136e3098c84cfa9c2be3",
+    "status": "resolved",
+    "history": [
+      {
+        "status": "resolved",
+        "changedBy": "Support Agent",
+        "changedAt": "2025-07-09T16:00:00Z",
+        "notes": "Color cartridge replaced."
+      }
+    ]
+  },
+  {
+    "subject": "Teams not loading on mobile",
+    "description": "Microsoft Teams app stuck on loading screen on iPhone.",
+    "category": "Software",
+    "domain": "IT",
+    "product": "Microsoft Teams",
+    "operation_type": "Support",
+    "priority": "medium",
+    "complexity": "low",
+    "severity": "minor",
+    "type": "incident",
+    "region": "West",
+    "country": "USA",
+    "account": "Acme Corp",
+    "skill_required": ["teams", "mobile", "support"],
+    "tags": ["teams", "mobile"],
+    "security_restriction": false,
+    "customer": "customer686e136e3098c84cfa9c2be3",
+    "assigned_to": "customer686e136e3098c84cfa9c2be3",
+    "status": "resolved",
+    "history": [
+      {
+        "status": "resolved",
+        "changedBy": "Support Agent",
+        "changedAt": "2025-07-10T12:00:00Z",
+        "notes": "App reinstalled and user logged in successfully."
+      }
+    ]
+  }
+]
