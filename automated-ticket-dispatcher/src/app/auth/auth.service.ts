@@ -28,25 +28,8 @@ export class AuthService {
         this.isLoggedInSubject.next(true);
         this.currentUserSubject.next(res.user);
         
-        // Role-based redirection
-        const userRole = res.user.role;
-        let redirectTo = '/dashboard';
-        
-        switch (userRole) {
-          case 'admin':
-            redirectTo = '/admin-dashboard';
-            break;
-          case 'agent':
-            redirectTo = '/agent-dashboard';
-            break;
-          case 'customer':
-            redirectTo = '/dashboard';
-            break;
-          default:
-            redirectTo = '/dashboard';
-        }
-        
-        this.router.navigate([redirectTo]);
+        // All users redirect to the dashboard (customer dashboard)
+        this.router.navigate(['/dashboard']);
         this.redirectUrl = '/dashboard'; // Reset redirect URL
       })
     );
@@ -92,18 +75,6 @@ export class AuthService {
 
   isRole(role: string): boolean {
     return this.getUserRole() === role;
-  }
-
-  isAdmin(): boolean {
-    return this.isRole('admin');
-  }
-
-  isAgent(): boolean {
-    return this.isRole('agent');
-  }
-
-  isCustomer(): boolean {
-    return this.isRole('customer');
   }
 
   private hasToken(): boolean {

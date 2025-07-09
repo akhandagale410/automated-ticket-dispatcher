@@ -3,8 +3,6 @@ import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
-import { AgentDashboardComponent } from './agent-dashboard/agent-dashboard.component';
 
 export const routes: Routes = [
   { 
@@ -22,14 +20,6 @@ export const routes: Routes = [
   { 
     path: 'dashboard', 
     component: DashboardComponent
-  },
-  { 
-    path: 'admin-dashboard', 
-    component: AdminDashboardComponent
-  },
-  { 
-    path: 'agent-dashboard', 
-    component: AgentDashboardComponent
   },
   { 
     path: '**', 
