@@ -1,0 +1,335 @@
+<div class="container-fluid mt-4">
+  <h2>Admin Dashboard</h2>
+  <div class="mb-3">
+    <button class="btn btn-primary me-2" (click)="showTicketsPanel()" [disabled]="activePanel==='tickets'">Tickets</button>
+    <button class="btn btn-info me-2" (click)="showAgentWorkloadPanel()" [disabled]="activePanel==='agents'">Agent Workload</button>
+    <button class="btn btn-secondary me-2" (click)="showBulkUpdatePanel()" [disabled]="activePanel==='bulk'">Bulk Update</button>
+    <button class="btn btn-success me-2" (click)="showAnalyticsPanel()" [disabled]="activePanel==='analytics'">Analytics</button>
+    <button class="btn btn-outline-danger float-end" (click)="logout()">Logout</button>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div *ngIf="isLoading" class="text-center my-5">
+    <div class="spinner-border" role="status"></div>
+  </div>
+
+  <!-- Tickets Panel -->
+  <div *ngIf="activePanel==='tickets'">
+    <h4>All Tickets</h4>
+    <!-- Filters -->
+    <form class="row g-2 mb-3" (ngSubmit)="applyFilters()">
+      <div class="col-md-2">
+        <input class="form-control" placeholder="Search" [(ngModel)]="filters.search" name="search">
+      </div>
+      <div class="col-md-2">
+        <select class="form-select" [(ngModel)]="filters.status" name="status">
+          <option value="">Status</option>
+          <option value="new">New</option>
+          <option value="assigned">Assigned</option>
+          <option value="in_progress">In Progress</option>
+          <option value="waiting_customer">Waiting Customer</option>
+          <option value="resolved">Resolved</option>
+          <option value="closed">Closed</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <select class="form-select" [(ngModel)]="filters.priority" name="priority">
+          <option value="">Priority</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+          <option value="critical">Critical</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <select class="form-select" [(ngModel)]="filters.assignedTo" name="assignedTo">
+          <option value="">Assigned To</option>
+          <option value="unassigned">Unassigned</option>
+          <option *ngFor="let agent of agents" [value]="agent.id">{{agent.name}}</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <select class="form-select" [(ngModel)]="filters.escalated" name="escalated">
+          <option value="">Escalated?</option>
+          <option [ngValue]="true">Yes</option>
+          <option [ngValue]="false">No</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <input class="form-control" type="date" [(ngModel)]="filters.fromDateStr" name="fromDateStr" placeholder="From">
+      </div>
+      <div class="col-md-2">
+        <input class="form-control" type="date" [(ngModel)]="filters.toDateStr" name="toDateStr" placeholder="To">
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-primary w-100" type="submit">Apply</button>
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-secondary w-100" type="button" (click)="resetFilters()">Reset</button>
+      </div>
+    </form>
+
+    <!-- Ticket Table -->
+    <div class="table-responsive">
+      <table class="table table-striped table-hover align-middle">
+        <thead>
+          <tr>
+            <th><input type="checkbox" [checked]="isAllSelected()" (change)="toggleAllSelection()"></th>
+            <th>ID</th>
+            <th>Subject</th>
+            <th>Status</th>
+            <th>Priority</th>
+            <th>Assigned To</th>
+            <th>Created</th>
+            <th>Escalated</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ticket of filteredTickets" [ngClass]="getRowClass(ticket)">
+            <td><input type="checkbox" [checked]="isTicketSelected(ticket._id)" (change)="toggleTicketSelection(ticket._id)"></td>
+            <td>{{ticket._id?.substring(0,8)}}</td>
+            <td>{{ticket.subject}}</td>
+            <td><span class="badge" [class]="getStatusBadgeClass(ticket.status)">{{ticket.status | titlecase}}</span></td>
+            <td><span class="badge" [class]="getPriorityBadgeClass(ticket.priority)">{{ticket.priority | titlecase}}</span></td>
+            <td>{{getAgentName(ticket.assigned_to)}}</td>
+            <td>{{ticket.created_at | date:'short'}}</td>
+            <td>
+              <span *ngIf="ticket.escalated" class="badge bg-danger">Yes</span>
+              <span *ngIf="!ticket.escalated" class="badge bg-secondary">No</span>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-outline-primary me-1" (click)="viewTicket(ticket)">View</button>
+              <button class="btn btn-sm btn-outline-warning me-1" (click)="editTicket(ticket)">Edit</button>
+              <button class="btn btn-sm btn-outline-success me-1" (click)="assignTicket(ticket)">Assign</button>
+              <button class="btn btn-sm btn-outline-danger" (click)="escalateTicket(ticket)" [disabled]="ticket.escalated">Escalate</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div *ngIf="filteredTickets.length === 0 && !isLoading" class="alert alert-info mt-3">
+      No tickets found.
+    </div>
+  </div>
+
+  <!-- Agent Workload Panel -->
+  <div *ngIf="activePanel==='agents'">
+    <h4>Agent Workload</h4>
+    <div class="row">
+      <div class="col-md-4 mb-3" *ngFor="let agent of agents">
+        <div class="card">
+          <div class="card-body">
+            <h5>{{agent.name}}</h5>
+            <p>Email: {{agent.email}}</p>
+            <p>Capacity: {{agent.capacity}}</p>
+            <p>Active Tickets: {{agent.activeTickets}}</p>
+            <div class="progress mb-2">
+              <div class="progress-bar" [ngClass]="getLoadClass(agent)" [style.width.%]="getLoadPercentage(agent)"></div>
+            </div>
+            <button class="btn btn-sm btn-outline-primary" (click)="viewAgentTickets(agent)">View Tickets</button>
+            <button class="btn btn-sm btn-outline-success ms-2" (click)="assignToAgent(agent)">Assign Selected</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulk Update Panel -->
+  <div *ngIf="activePanel==='bulk'">
+    <h4>Bulk Update</h4>
+    <div class="alert alert-info">
+      Selected Tickets: {{selectedTickets.length}}
+    </div>
+    <form (ngSubmit)="applyBulkUpdate()">
+      <div class="row mb-3">
+        <div class="col-md-3">
+          <select class="form-select" [(ngModel)]="bulkUpdate.status" name="bulkStatus">
+            <option value="">Change Status</option>
+            <option value="new">New</option>
+            <option value="assigned">Assigned</option>
+            <option value="in_progress">In Progress</option>
+            <option value="waiting_customer">Waiting Customer</option>
+            <option value="resolved">Resolved</option>
+            <option value="closed">Closed</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <select class="form-select" [(ngModel)]="bulkUpdate.priority" name="bulkPriority">
+            <option value="">Change Priority</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="critical">Critical</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <input class="form-control" [(ngModel)]="bulkUpdate.notes" name="bulkNotes" placeholder="Admin note (optional)">
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-primary w-100" type="submit">Apply</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Analytics Panel -->
+  <div *ngIf="activePanel==='analytics'">
+    <h4>Analytics</h4>
+    <div *ngIf="stats" class="row mb-3">
+      <div class="col-md-3">
+        <div class="card bg-primary text-white mb-3">
+          <div class="card-body">
+            <h5>Total Tickets</h5>
+            <h2>{{stats.totalTickets}}</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card bg-success text-white mb-3">
+          <div class="card-body">
+            <h5>Resolved</h5>
+            <h2>{{getResolvedTicketsCount()}}</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card bg-warning text-dark mb-3">
+          <div class="card-body">
+            <h5>Open</h5>
+            <h2>{{getOpenTicketsCount()}}</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card bg-danger text-white mb-3">
+          <div class="card-body">
+            <h5>Escalated</h5>
+            <h2>{{stats.escalatedTickets}}</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="agingData">
+      <h5>Ticket Aging Distribution</h5>
+      <pre>{{agingData | json}}</pre>
+      <!-- Replace with chart.js or similar for real chart -->
+    </div>
+    <button class="btn btn-outline-secondary mt-3" (click)="exportReport()">Export Report</button>
+  </div>
+
+  <!-- View Ticket Modal -->
+  <div class="modal fade show" tabindex="-1" [style.display]="showViewModal ? 'block' : 'none'" *ngIf="showViewModal && selectedTicket">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Ticket Details</h5>
+          <button type="button" class="btn-close" (click)="closeViewModal()"></button>
+        </div>
+        <div class="modal-body">
+          <div><strong>ID:</strong> {{selectedTicket._id}}</div>
+          <div><strong>Subject:</strong> {{selectedTicket.subject}}</div>
+          <div><strong>Description:</strong> {{selectedTicket.description}}</div>
+          <div><strong>Status:</strong> {{selectedTicket.status}}</div>
+          <div><strong>Priority:</strong> {{selectedTicket.priority}}</div>
+          <div><strong>Assigned To:</strong> {{getAgentName(selectedTicket.assigned_to)}}</div>
+          <div><strong>Created:</strong> {{selectedTicket.created_at | date:'medium'}}</div>
+          <div><strong>Escalated:</strong> {{selectedTicket.escalated ? 'Yes' : 'No'}}</div>
+          <div *ngIf="selectedTicket.escalation_reason"><strong>Escalation Reason:</strong> {{selectedTicket.escalation_reason}}</div>
+          <div *ngIf="selectedTicket.tags && selectedTicket.tags.length">
+            <strong>Tags:</strong>
+            <span class="badge bg-secondary me-1" *ngFor="let tag of selectedTicket.tags">{{tag}}</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeViewModal()">Close</button>
+          <button class="btn btn-warning" (click)="editTicket(selectedTicket)">Edit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade show" *ngIf="showViewModal" (click)="closeViewModal()"></div>
+
+  <!-- Edit Ticket Modal -->
+  <div class="modal fade show" tabindex="-1" [style.display]="showEditModal ? 'block' : 'none'" *ngIf="showEditModal && editingTicket">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Ticket</h5>
+          <button type="button" class="btn-close" (click)="closeEditModal()"></button>
+        </div>
+        <div class="modal-body">
+          <form (ngSubmit)="saveTicketChanges()">
+            <div class="mb-3">
+              <label class="form-label">Subject</label>
+              <input class="form-control" [(ngModel)]="editingTicket.subject" name="editSubject" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" [(ngModel)]="editingTicket.description" name="editDescription" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Status</label>
+              <select class="form-select" [(ngModel)]="editingTicket.status" name="editStatus">
+                <option value="new">New</option>
+                <option value="assigned">Assigned</option>
+                <option value="in_progress">In Progress</option>
+                <option value="waiting_customer">Waiting Customer</option>
+                <option value="resolved">Resolved</option>
+                <option value="closed">Closed</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Priority</label>
+              <select class="form-select" [(ngModel)]="editingTicket.priority" name="editPriority">
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+                <option value="critical">Critical</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Tags</label>
+              <input class="form-control" [(ngModel)]="editingTicket.tags" name="editTags" placeholder="Comma separated">
+            </div>
+            <button class="btn btn-primary" type="submit">Save</button>
+            <button class="btn btn-secondary ms-2" type="button" (click)="closeEditModal()">Cancel</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade show" *ngIf="showEditModal" (click)="closeEditModal()"></div>
+
+  <!-- Assign Ticket Modal -->
+  <div class="modal fade show" tabindex="-1" [style.display]="showAssignModal ? 'block' : 'none'" *ngIf="showAssignModal && selectedTicket">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Assign Ticket</h5>
+          <button type="button" class="btn-close" (click)="closeAssignModal()"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Select Agent</label>
+            <select class="form-select" [(ngModel)]="selectedAgentId" name="assignAgent">
+              <option *ngFor="let agent of agents" [value]="agent.id">{{agent.name}} ({{agent.activeTickets}}/{{agent.capacity}})</option>
+            </select>
+          </div>
+          <div *ngIf="selectedAgentOverCapacity" class="alert alert-warning">
+            Agent is over capacity. You can override and assign anyway.
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" [(ngModel)]="overrideCapacity" name="overrideCapacity" id="overrideCapacity">
+              <label class="form-check-label" for="overrideCapacity">Override Capacity</label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary" (click)="confirmAssignTicket()" [disabled]="!selectedAgentId">Assign</button>
+          <button class="btn btn-secondary" (click)="closeAssignModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade show" *ngIf="showAssignModal" (click)="closeAssignModal()"></div>
+</div>

@@ -25,22 +25,30 @@ export class LoginComponent {
   }
 
   onSubmit() {
-    if (this.loginForm.valid) {
-      this.isLoading = true;
-      this.error = '';
-      this.auth.login(this.loginForm.value).subscribe({
-        next: () => {
-          this.isLoading = false;
-          // Navigation is handled by AuthService
-          console.log('Login successful');
-        },
-        error: err => {
-          this.isLoading = false;
-          this.error = err.error?.message || 'Login failed';
+  if (this.loginForm.valid) {
+    this.isLoading = true;
+    this.error = '';
+    this.auth.login(this.loginForm.value).subscribe({
+      next: () => {
+        this.isLoading = false;
+        // Get the current user from AuthService
+        const user = this.auth.getCurrentUser();
+        // Redirect based on role
+        if (user?.role === 'admin') {
+          this.router.navigate(['/admin-dashboard']);
+        } else if (user?.role === 'agent') {
+          this.router.navigate(['/agent-dashboard']);
+        } else {
+          this.router.navigate(['/dashboard']);
         }
-      });
-    } else {
-      this.error = 'Please fill all fields correctly';
-    }
+      },
+      error: err => {
+        this.isLoading = false;
+        this.error = err.error?.message || 'Login failed';
+      }
+    });
+  } else {
+    this.error = 'Please fill all fields correctly';
   }
+}
 }
