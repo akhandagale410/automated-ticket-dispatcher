@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart.js Test - Ticket Aging Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-bottom: 30px;
+        }
+        .summary {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .summary-card {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .summary-card h3 {
+            margin: 0;
+            color: #007bff;
+        }
+        .summary-card p {
+            margin: 5px 0 0 0;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🥧 Ticket Aging Distribution Pie Chart</h1>
+        <div class="chart-container">
+            <canvas id="agingChart"></canvas>
+        </div>
+        <div class="summary">
+            <div class="summary-card">
+                <h3>3</h3>
+                <p>0-7 days</p>
+            </div>
+            <div class="summary-card">
+                <h3>5</h3>
+                <p>8-30 days</p>
+            </div>
+            <div class="summary-card">
+                <h3>2</h3>
+                <p>31-90 days</p>
+            </div>
+            <div class="summary-card">
+                <h3>1</h3>
+                <p>90+ days</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data (similar to what would come from the backend)
+        const sampleAgingData = {
+            ageRanges: {
+                "0-7 days": 3,
+                "8-30 days": 5,
+                "31-90 days": 2,
+                "90+ days": 1
+            }
+        };
+
+        function createAgingChart() {
+            const canvas = document.getElementById('agingChart');
+            const ctx = canvas.getContext('2d');
+
+            // Prepare data for the chart
+            const labels = Object.keys(sampleAgingData.ageRanges);
+            const data = Object.values(sampleAgingData.ageRanges);
+            
+            // Color scheme for the chart
+            const backgroundColors = [
+                '#28a745', // Green for 0-7 days
+                '#ffc107', // Yellow for 8-30 days  
+                '#fd7e14', // Orange for 31-90 days
+                '#dc3545'  // Red for 90+ days
+            ];
+
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Tickets by Age',
+                        data: data,
+                        backgroundColor: backgroundColors.slice(0, data.length),
+                        borderColor: '#ffffff',
+                        borderWidth: 3,
+                        hoverBorderWidth: 4,
+                        hoverBorderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Ticket Distribution by Age Ranges',
+                            font: {
+                                size: 18,
+                                weight: 'bold'
+                            },
+                            padding: 20,
+                            color: '#333'
+                        },
+                        legend: {
+                            display: true,
+                            position: 'right',
+                            labels: {
+                                usePointStyle: true,
+                                pointStyle: 'circle',
+                                padding: 20,
+                                font: {
+                                    size: 14
+                                },
+                                generateLabels: function(chart) {
+                                    const original = Chart.defaults.plugins.legend.labels.generateLabels;
+                                    const labels = original.call(this, chart);
+                                    const totalTickets = data.reduce((a, b) => a + b, 0);
+                                    
+                                    labels.forEach((label, index) => {
+                                        const count = data[index];
+                                        const percentage = totalTickets > 0 ? ((count / totalTickets) * 100).toFixed(1) : '0';
+                                        label.text = `${label.text}: ${count} (${percentage}%)`;
+                                    });
+                                    
+                                    return labels;
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const count = context.parsed;
+                                    const totalTickets = data.reduce((a, b) => a + b, 0);
+                                    const percentage = totalTickets > 0 ? ((count / totalTickets) * 100).toFixed(1) : '0';
+                                    const label = context.label || '';
+                                    return `${label}: ${count} tickets (${percentage}%)`;
+                                }
+                            },
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: '#ffffff',
+                            borderWidth: 1,
+                            cornerRadius: 6,
+                            displayColors: true,
+                            padding: 12
+                        }
+                    },
+                    animation: {
+                        animateRotate: true,
+                        animateScale: true,
+                        duration: 1500,
+                        easing: 'easeInOutQuart'
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'nearest'
+                    }
+                }
+            });
+        }
+
+        // Create the chart when the page loads
+        window.addEventListener('load', createAgingChart);
+    </script>
+</body>
+</html>

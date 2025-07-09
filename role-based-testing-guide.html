@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Role-Based Dashboard Testing Guide</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; text-align: center; }
+        h2 { color: #007bff; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+        .role-section {
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid;
+        }
+        .admin { border-left-color: #dc3545; background-color: #f8d7da; }
+        .agent { border-left-color: #007bff; background-color: #d1ecf1; }
+        .customer { border-left-color: #28a745; background-color: #d4edda; }
+        .credentials {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border: 1px solid #dee2e6;
+        }
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .feature-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .icon { font-size: 1.5em; margin-right: 10px; }
+        .url { background: #e9ecef; padding: 10px; border-radius: 5px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎭 Role-Based Dashboard Testing Guide</h1>
+        
+        <div class="role-section admin">
+            <h2><span class="icon">🛡️</span>ADMIN Dashboard Testing</h2>
+            <div class="credentials">
+                <strong>Login Credentials:</strong><br>
+                Email: <code>admin@company.com</code><br>
+                Password: <code>admin123</code>
+            </div>
+            <div class="url"><strong>Direct URL:</strong> http://localhost:4200/admin-dashboard</div>
+            
+            <div class="feature-list">
+                <div class="feature-card">
+                    <h4>📊 System Statistics</h4>
+                    <ul>
+                        <li>Total Tickets</li>
+                        <li>Resolved/In Progress/Escalated</li>
+                        <li>Total Users & Agent Count</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>🎛️ Admin Actions</h4>
+                    <ul>
+                        <li>View System Analytics (Pie Chart)</li>
+                        <li>View All System Tickets</li>
+                        <li>User Management Panel</li>
+                        <li>Generate Reports</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>🎫 Ticket Management</h4>
+                    <ul>
+                        <li>View ALL tickets in system</li>
+                        <li>Edit any ticket</li>
+                        <li>Delete any ticket</li>
+                        <li>See customer information</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="role-section agent">
+            <h2><span class="icon">👔</span>AGENT Dashboard Testing</h2>
+            <div class="credentials">
+                <strong>Login Credentials:</strong><br>
+                Email: <code>agent@company.com</code><br>
+                Password: <code>agent123</code>
+            </div>
+            <div class="url"><strong>Direct URL:</strong> http://localhost:4200/agent-dashboard</div>
+            
+            <div class="feature-list">
+                <div class="feature-card">
+                    <h4>📊 Agent Metrics</h4>
+                    <ul>
+                        <li>Assigned to Me</li>
+                        <li>In Progress Count</li>
+                        <li>Resolved Today</li>
+                        <li>High Priority Tickets</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>📥 Ticket Assignment</h4>
+                    <ul>
+                        <li>View Unassigned Tickets</li>
+                        <li>Self-assign tickets</li>
+                        <li>"Assign to Me" button</li>
+                        <li>Priority-based highlighting</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>🛠️ Work Management</h4>
+                    <ul>
+                        <li>Status update dropdown</li>
+                        <li>View/Edit ticket details</li>
+                        <li>Escalate tickets</li>
+                        <li>Track daily progress</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="role-section customer">
+            <h2><span class="icon">👤</span>CUSTOMER Dashboard Testing</h2>
+            <div class="credentials">
+                <strong>Login Credentials:</strong><br>
+                Email: <code>customer@company.com</code><br>
+                Password: <code>customer123</code>
+            </div>
+            <div class="url"><strong>Direct URL:</strong> http://localhost:4200/dashboard</div>
+            
+            <div class="feature-list">
+                <div class="feature-card">
+                    <h4>📊 Personal Statistics</h4>
+                    <ul>
+                        <li>My Total Tickets</li>
+                        <li>Resolved/In Progress</li>
+                        <li>Escalated Tickets</li>
+                        <li>Personal aging chart</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>✨ Ticket Creation</h4>
+                    <ul>
+                        <li>Create New Ticket form</li>
+                        <li>Full ticket details</li>
+                        <li>Priority/Type selection</li>
+                        <li>Form validation</li>
+                    </ul>
+                </div>
+                <div class="feature-card">
+                    <h4>🎫 My Tickets</h4>
+                    <ul>
+                        <li>View only own tickets</li>
+                        <li>Modal-based viewing/editing</li>
+                        <li>Escalate tickets</li>
+                        <li>Delete own tickets</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <h2>🧪 Testing Steps</h2>
+        <ol>
+            <li><strong>Start Backend:</strong> Ensure MongoDB and Node.js server are running</li>
+            <li><strong>Start Frontend:</strong> Run Angular development server (<code>ng serve</code>)</li>
+            <li><strong>Test Auto-Redirection:</strong>
+                <ul>
+                    <li>Go to login page: <code>http://localhost:4200/login</code></li>
+                    <li>Login with each role's credentials</li>
+                    <li>Verify automatic redirection to correct dashboard</li>
+                </ul>
+            </li>
+            <li><strong>Test Role Features:</strong>
+                <ul>
+                    <li>Verify each dashboard shows role-appropriate features</li>
+                    <li>Test statistics cards and action buttons</li>
+                    <li>Test pie chart modal in each dashboard</li>
+                </ul>
+            </li>
+            <li><strong>Test Direct Access:</strong>
+                <ul>
+                    <li>Try accessing URLs directly</li>
+                    <li>Verify proper authentication and role checking</li>
+                </ul>
+            </li>
+        </ol>
+
+        <h2>🎯 Key Differences to Verify</h2>
+        <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+            <thead>
+                <tr style="background: #f8f9fa;">
+                    <th style="border: 1px solid #dee2e6; padding: 12px;">Feature</th>
+                    <th style="border: 1px solid #dee2e6; padding: 12px;">Admin</th>
+                    <th style="border: 1px solid #dee2e6; padding: 12px;">Agent</th>
+                    <th style="border: 1px solid #dee2e6; padding: 12px;">Customer</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="border: 1px solid #dee2e6; padding: 12px;"><strong>Header Color</strong></td>
+                    <td style="border: 1px solid #dee2e6; padding: 12px;">Red (Danger)</td>
+                    <td style="border: 1px solid #dee2e6; padding: 12px;">Blue (Primary)</td>
+                    <td style="border: 1px solid #dee2e6; padding: 12px;">Green (Success)</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #dee2e6; padding: 12px;"><strong>Statistics Cards</strong></td>
+                    <td style="border: 1px solid #dee2e6; padding: 12px;">6 cards (system-wide)</td>
+                    <td style="border: 1px solid #dee2e6; padding: 12px;">4 cards (work-focused)</td>
+                    <td style="border: 1px solid #dee2e6; padding: 12px;">4 cards (personal)</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #dee2e6; padding: 12px;"><strong>Ticket Access</strong></td>
+                    <td style="border: 1px solid #dee2e6; padding: 12px;">ALL tickets</td>
+                    <td style="border: 1px solid #dee2e6; padding: 12px;">Assigned + Unassigned</td>
+                    <td style="border: 1px solid #dee2e6; padding: 12px;">Own tickets only</td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #dee2e6; padding: 12px;"><strong>Primary Actions</strong></td>
+                    <td style="border: 1px solid #dee2e6; padding: 12px;">System management</td>
+                    <td style="border: 1px solid #dee2e6; padding: 12px;">Ticket assignment</td>
+                    <td style="border: 1px solid #dee2e6; padding: 12px;">Ticket creation</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="background: #d1ecf1; padding: 20px; border-radius: 8px; margin: 30px 0;">
+            <h3>🚀 Quick Start Commands</h3>
+            <p><strong>Backend:</strong> <code>cd ticket-distribution-backend && node src/app.js</code></p>
+            <p><strong>Frontend:</strong> <code>cd automated-ticket-dispatcher && ng serve</code></p>
+            <p><strong>MongoDB:</strong> Ensure MongoDB is running on localhost:27017</p>
+        </div>
+    </div>
+</body>
+</html>

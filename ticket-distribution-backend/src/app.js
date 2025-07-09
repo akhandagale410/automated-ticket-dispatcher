@@ -1,7 +1,5 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-// const ticketRouter = require('./routes/ticket');
-// const agentRouter = require('./routes/agent');
+const cors = require('cors');
 const connectDB = require('./db/connect');
 
 const app = express();
@@ -11,10 +9,14 @@ const PORT = process.env.PORT || 3000;
 connectDB();
 
 // Middleware
-app.use(bodyParser.json());
+app.use(cors());
+app.use(express.json()); // Use built-in express.json() instead of body-parser
+
+// Auth routes
+app.use('/api/auth', require('./routes/auth'));
 
 // Routes
-// app.use('/api/tickets', ticketRouter);
+app.use('/api/tickets', require('./routes/tickets'));
 // app.use('/api/agents', agentRouter);
 
 // Health check endpoint

@@ -15,4 +15,4 @@ const agentSchema = new mongoose.Schema({
   created_at: { type: Date, default: Date.now }
 });
 
-module.exports
+module.exports = mongoose.model('Agent', agentSchema);

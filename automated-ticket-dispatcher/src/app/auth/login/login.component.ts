@@ -1,31 +1,46 @@
 import { Component } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
-  templateUrl: './login.component.html'
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
   loginForm: FormGroup;
   error = '';
+  isLoading = false;
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
     this.loginForm = this.fb.group({
-      email: [''],
-      password: ['']
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 
   onSubmit() {
-    this.auth.login(this.loginForm.value).subscribe({
-      next: () => this.router.navigate(['/']),
-      error: err => this.error = err.error.message || 'Login failed'
-    });
+    if (this.loginForm.valid) {
+      this.isLoading = true;
+      this.error = '';
+      this.auth.login(this.loginForm.value).subscribe({
+        next: () => {
+          this.isLoading = false;
+          // Navigation is handled by AuthService
+          console.log('Login successful');
+        },
+        error: err => {
+          this.isLoading = false;
+          this.error = err.error?.message || 'Login failed';
+        }
+      });
+    } else {
+      this.error = 'Please fill all fields correctly';
+    }
   }
 }
