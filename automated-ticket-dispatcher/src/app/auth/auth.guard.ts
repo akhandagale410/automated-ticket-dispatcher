@@ -18,6 +18,33 @@ export const authGuard: CanActivateFn = (route, state) => {
   return false;
 };
 
+export const adminGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (authService.isAuthenticated() && authService.isRole('admin')) {
+    return true;
+  }
+
+  // If user is not admin, redirect to dashboard
+  router.navigate(['/dashboard']);
+  return false;
+};
+
+export const agentGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (authService.isAuthenticated() && 
+      (authService.isRole('agent') || authService.isRole('admin'))) {
+    return true;
+  }
+
+  // If user is not agent or admin, redirect to dashboard
+  router.navigate(['/dashboard']);
+  return false;
+};
+
 export const loginGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);

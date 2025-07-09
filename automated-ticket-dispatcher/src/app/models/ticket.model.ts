@@ -100,3 +100,22 @@ export interface UpdateTicketRequest extends Partial<CreateTicketRequest> {
 export interface EscalateTicketRequest {
   escalation_reason: string;
 }
+
+export interface AgentWorkload {
+  id: string;
+  name: string;
+  email: string;
+  skills: string[];
+  domains: string[];
+  experience: number;
+  capacity: number;
+  activeTickets: number;
+  totalTickets: number;
+  availableCapacity: number;
+}
+
+export interface AdminTicketUpdateRequest extends UpdateTicketRequest {
+  escalated?: boolean;
+  escalation_reason?: string;
+  additionalNote?: string;
+}

@@ -6,8 +6,6 @@ const { setupDefaultAgents } = require('./setupAgents');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-
-
 // Connect to database
 connectDB();
 
@@ -15,12 +13,9 @@ connectDB();
 app.use(cors());
 app.use(express.json()); // Use built-in express.json() instead of body-parser
 
-// Auth routes
-app.use('/api/auth', require('./routes/auth'));
-
 // Routes
+app.use('/api/auth', require('./routes/auth'));
 app.use('/api/tickets', require('./routes/tickets'));
-// app.use('/api/agents', agentRouter);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -37,13 +32,12 @@ app.use((err, req, res, next) => {
 app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
   console.log('🚀 Automated Ticket Distribution System started');
-  
-  // Auto-setup default agents on server start
+
   try {
     console.log('🔧 Setting up default agents...');
-    //await setupDefaultAgents();
+    await setupDefaultAgents();
     console.log('✅ Default agents setup completed');
-    
+
     console.log('\n🔑 Login Credentials:');
     console.log('AGENT: agent@company.com / agent123');
     console.log('AGENT: sarah.support@company.com / agent123');

@@ -4,7 +4,8 @@ import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './auth/register/register.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AgentDashboardComponent } from './agent-dashboard/agent-dashboard.component';
-import { authGuard } from './auth/auth.guard';
+import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
+import { authGuard, adminGuard, agentGuard, loginGuard } from './auth/auth.guard';
 
 export const routes: Routes = [
   { 
@@ -13,7 +14,8 @@ export const routes: Routes = [
   },
   { 
     path: 'login', 
-    component: LoginComponent
+    component: LoginComponent,
+    canActivate: [loginGuard]
   },
   { 
     path: 'register', 
@@ -27,7 +29,12 @@ export const routes: Routes = [
   { 
     path: 'agent-dashboard', 
     component: AgentDashboardComponent,
-    canActivate: [authGuard]
+    canActivate: [agentGuard]
+  },
+  { 
+    path: 'admin-dashboard', 
+    component: AdminDashboardComponent,
+    canActivate: [adminGuard]
   },
   { 
     path: '**', 

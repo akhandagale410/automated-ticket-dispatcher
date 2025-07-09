@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { 
   Ticket, 
@@ -7,7 +7,9 @@ import {
   TicketAgingData, 
   CreateTicketRequest, 
   UpdateTicketRequest, 
-  EscalateTicketRequest 
+  EscalateTicketRequest,
+  AgentWorkload,
+  AdminTicketUpdateRequest
 } from '../models/ticket.model';
 
 @Injectable({
@@ -109,5 +111,72 @@ export class TicketService {
     return this.http.get<TicketAgingData>(`${this.apiUrl}/stats/aging`, {
       headers: this.getAuthHeaders()
     });
+  }
+
+  // Admin-specific methods
+  
+  // Get all tickets with advanced filtering for admin
+  getAdminTickets(filters?: {
+    status?: string;
+    priority?: string;
+    assignedTo?: string;
+    escalated?: boolean;
+    fromDate?: Date;
+    toDate?: Date;
+    search?: string;
+  }): Observable<{ tickets: Ticket[] }> {
+    let queryParams = new HttpParams();
+    
+    if (filters) {
+      if (filters.status) queryParams = queryParams.set('status', filters.status);
+      if (filters.priority) queryParams = queryParams.set('priority', filters.priority);
+      if (filters.assignedTo) queryParams = queryParams.set('assignedTo', filters.assignedTo);
+      if (filters.escalated !== undefined) queryParams = queryParams.set('escalated', filters.escalated.toString());
+      if (filters.fromDate) queryParams = queryParams.set('fromDate', filters.fromDate.toISOString());
+      if (filters.toDate) queryParams = queryParams.set('toDate', filters.toDate.toISOString());
+      if (filters.search) queryParams = queryParams.set('search', filters.search);
+    }
+    
+    return this.http.get<{ tickets: Ticket[] }>(`${this.apiUrl}/admin/tickets`, {
+      headers: this.getAuthHeaders(),
+      params: queryParams
+    });
+  }
+  
+  // Get agent workload info for admin
+  getAgentsWorkload(): Observable<{ agents: AgentWorkload[] }> {
+    return this.http.get<{ agents: AgentWorkload[] }>(`${this.apiUrl}/admin/agents-workload`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+  
+  // Admin manually assign ticket to specific agent
+  adminAssignTicket(ticketId: string, agentId: string, overrideCapacity = false): Observable<{ message: string; ticket: Ticket; agent: any }> {
+    return this.http.post<{ message: string; ticket: Ticket; agent: any }>(
+      `${this.apiUrl}/admin/assign/${ticketId}/${agentId}`,
+      { overrideCapacity },
+      { headers: this.getAuthHeaders() }
+    );
+  }
+  
+  // Advanced ticket update with admin privileges
+  adminUpdateTicket(id: string, ticketData: AdminTicketUpdateRequest): Observable<{ message: string; ticket: Ticket; changesApplied: string[] }> {
+    return this.http.put<{ message: string; ticket: Ticket; changesApplied: string[] }>(
+      `${this.apiUrl}/admin/ticket/${id}`,
+      ticketData,
+      { headers: this.getAuthHeaders() }
+    );
+  }
+  
+  // Bulk update tickets (admin only)
+  adminBulkUpdateTickets(ticketIds: string[], updates: { status?: string; priority?: string; notes?: string }): Observable<{ message: string; results: any[] }> {
+    return this.http.post<{ message: string; results: any[] }>(
+      `${this.apiUrl}/admin/bulk-update`,
+      {
+        ticketIds,
+        ...updates
+      },
+      { headers: this.getAuthHeaders() }
+    );
   }
 }

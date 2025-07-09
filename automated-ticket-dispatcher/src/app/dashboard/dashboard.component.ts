@@ -17,9 +17,17 @@ import { Ticket, TicketStats } from '../models/ticket.model';
           <div class="col-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
               <h1>Customer Ticket Dashboard</h1>
-              <button class="btn btn-danger" (click)="logout()">
-                Logout
-              </button>
+              <div class="d-flex gap-2">
+                <button class="btn btn-primary" *ngIf="isAdmin" routerLink="/admin-dashboard">
+                  <i class="fas fa-user-shield"></i> Admin Dashboard
+                </button>
+                <button class="btn btn-primary" *ngIf="isAgent" routerLink="/agent-dashboard">
+                  <i class="fas fa-headset"></i> Agent Dashboard
+                </button>
+                <button class="btn btn-danger" (click)="logout()">
+                  <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+              </div>
             </div>
             <p class="lead">Manage your support tickets efficiently.</p>
           </div>
@@ -507,6 +515,10 @@ export class DashboardComponent implements OnInit {
   showAgingChartModal = false;
   message = '';
   messageType: 'success' | 'error' = 'success';
+  
+  // User role properties
+  isAdmin = false;
+  isAgent = false;
 
   // Modal properties
   selectedTicket: Ticket | null = null;
@@ -534,11 +546,11 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Check if user should be redirected to agent dashboard
+    // Check user role
     const user = this.authService.getCurrentUser();
-    if (user && (user.role === 'agent' || user.role === 'admin')) {
-      this.router.navigate(['/agent-dashboard']);
-      return;
+    if (user) {
+      this.isAdmin = user.role === 'admin';
+      this.isAgent = user.role === 'agent';
     }
     
     this.loadDashboardData();
